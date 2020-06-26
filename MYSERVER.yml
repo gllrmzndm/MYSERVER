@@ -1,5 +1,5 @@
 ---
-# ansible-playbook -i ./hosts MYSERVER.yml -K
+# ansible-playbook -i ./MYSERVER.yml -K
 
   - hosts: all
     become: yes
