@@ -1,50 +1,46 @@
-# ansible-playbook -i ./hosts MYSERVER.yml -K
 ---
+# ansible-playbook -i ./hosts MYSERVER.yml -K
+
   - hosts: all
     become: yes
     tasks:
 
-    - name: Upgrade all packages
-      yum:
-        name: '*'
-        state: latest
-    
-    - name: Ensure SELinux is set to enforcing mode
-      lineinfile:
-        path: /etc/selinux/config
-        regexp: '^SELINUX='
-        line: SELINUX=enforcing
-    
-    - name: Install a list of packages
-      yum:
-        name: "{{ packages }}"
-      vars:
-        packages:
-        - epel-release
-        - podman
-        - podman-docker
-        - logwatch
-        - git
-        - setroubleshoot
-        - dnf-automatic
-        state: latest
-    
-    - name: install the latest version of packages
-      yum:
-        name:
-        - fail2ban
-        - clamav
-        state: latest
+    - name: Update and upgrade server
+      apt:
+        update_cache: yes
+        upgrade: yes
 
+    - name: Install packages
+      apt:
+        name:
+        - docker.io
+        - fail2ban
+        - ufw
+        - fail2ban
+        - unattended-upgrades
+        - denyhosts
+        - logwatch
+        - vim
+        state: latest
+        cache_valid_time: 3600
+
+    - name: all incoming traffic is denied by default.
+      ufw: state=enabled policy=deny
+
+
+    - name: Allow ssh traffic
+      ufw: rule=allow port=22 proto=tcp
 
     - name: Disallow password authentication
       lineinfile: dest=/etc/ssh/sshd_config
               regexp="^PasswordAuthentication"
               line="PasswordAuthentication no"
               state=present
+      notify: Restart ssh
 
     - name: Disallow root SSH access
       lineinfile: dest=/etc/ssh/sshd_config
               regexp="^PermitRootLogin"
               line="PermitRootLogin no"
               state=present
+      notify: Restart ssh
