@@ -1,0 +1,50 @@
+# ansible-playbook -i ./hosts MYSERVER.yml -K
+---
+  - hosts: all
+    become: yes
+    tasks:
+
+    - name: Upgrade all packages
+      yum:
+        name: '*'
+        state: latest
+    
+    - name: Ensure SELinux is set to enforcing mode
+      lineinfile:
+        path: /etc/selinux/config
+        regexp: '^SELINUX='
+        line: SELINUX=enforcing
+    
+    - name: Install a list of packages
+      yum:
+        name: "{{ packages }}"
+      vars:
+        packages:
+        - epel-release
+        - podman
+        - podman-docker
+        - logwatch
+        - git
+        - setroubleshoot
+        - dnf-automatic
+        state: latest
+    
+    - name: install the latest version of packages
+      yum:
+        name:
+        - fail2ban
+        - clamav
+        state: latest
+
+
+    - name: Disallow password authentication
+      lineinfile: dest=/etc/ssh/sshd_config
+              regexp="^PasswordAuthentication"
+              line="PasswordAuthentication no"
+              state=present
+
+    - name: Disallow root SSH access
+      lineinfile: dest=/etc/ssh/sshd_config
+              regexp="^PermitRootLogin"
+              line="PermitRootLogin no"
+              state=present
