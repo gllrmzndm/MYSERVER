@@ -66,3 +66,13 @@ services:
       - SSL_CERT=/certs/guillermo0172.nextcloud.ml.crt
     networks:
       - proxy-tier
+
+volumes:
+  db:
+  nextcloud:
+  certs:
+  vhost.d:
+  html:
+
+networks:
+  proxy-tier:
