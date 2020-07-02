@@ -1,7 +1,4 @@
----
-# ansible-playbook -i ./MYSERVER.yml -K
-
-  - hosts: all
+  - hosts: localhost
     become: yes
     tasks:
 
@@ -13,20 +10,26 @@
     - name: Install packages
       apt:
         name:
-        - docker.io
+        - docker
         - fail2ban
         - ufw
-        - fail2ban
         - unattended-upgrades
-        - denyhosts
         - logwatch
         - vim
+        - ansible
+        - virt-manager
         state: latest
         cache_valid_time: 3600
 
     - name: all incoming traffic is denied by default.
       ufw: state=enabled policy=deny
 
+    - name: Do nothing when laptop lid is closed
+      lineinfile: dest=/etc/systemd/logind.conf
+              regexp="^#HandleLidSwitch=suspend"
+              line="HandleLidSwitch=ignore"
+              state=present
+      notify: Restart systemd-logind
 
     - name: Allow ssh traffic
       ufw: rule=allow port=22 proto=tcp
