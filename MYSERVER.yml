@@ -2,27 +2,19 @@
     become: yes
     tasks:
 
-    - name: Update and upgrade server
-      apt:
-        update_cache: yes
-        upgrade: yes
+    - name: upgrade all packages
+      yum:
+        name: '*'
+        state: latest
 
     - name: Install packages
-      apt:
+      yum:
         name:
-        - docker
-        - docker-compose
-        - fail2ban
-        - ufw
-        - unattended-upgrades
-        - logwatch
-        - vim
-        - ansible
+          - vim
+          - ansible
+          - yum-utils
         state: latest
         cache_valid_time: 3600
-
-    - name: all incoming traffic is denied by default.
-      ufw: state=enabled policy=deny
 
     - name: Do nothing when laptop lid is closed
       lineinfile: dest=/etc/systemd/logind.conf
@@ -30,9 +22,6 @@
               line="HandleLidSwitch=ignore"
               state=present
       notify: Restart systemd-logind
-
-    - name: Allow ssh traffic
-      ufw: rule=allow port=22 proto=tcp
 
     - name: Disallow password authentication
       lineinfile: dest=/etc/ssh/sshd_config
