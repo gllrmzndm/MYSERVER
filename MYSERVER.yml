@@ -22,12 +22,12 @@
 
     - name: Start service dnf-automatic.timer, if not started
       service:
-          name: dnf-automatic.timer
+          name: dnf-automatic.timer.service
           state: started
 
     - name: Enable service dnf-automatic.timer, and not touch the state
       service:
-        name: dnf-automatic.timer
+        name: dnf-automatic.timer.service
         enabled: yes
 
     - name: Applying automatic updates.
@@ -35,7 +35,7 @@
               regexp="^apply_updates = no"
               line="apply_updates = yes"
               state=present
-      notify: Restart dnf-automatic.timer
+      notify: Restart dnf-automatic.timer.service
 
     - name: Do nothing when laptop lid is closed
       lineinfile: dest=/etc/systemd/logind.conf
