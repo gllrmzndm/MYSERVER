@@ -10,10 +10,11 @@
     - name: Install packages
       yum:
         name:
+          - dnf-automatic
+          - ansible
           - podman
           - podman-docker
           - vim
-          - ansible
           - yum-utils
         state: latest
 
