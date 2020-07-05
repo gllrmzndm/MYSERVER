@@ -10,6 +10,8 @@
     - name: Install packages
       yum:
         name:
+          - podman
+          - podman-docker
           - vim
           - ansible
           - yum-utils
