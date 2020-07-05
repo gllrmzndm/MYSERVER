@@ -22,12 +22,12 @@
 
     - name: Start service dnf-automatic.timer, if not started
       service:
-          name: dnf-automatic.timer.service
+          name: dnf-automatic.timer
           state: started
 
     - name: Enable service dnf-automatic.timer, and not touch the state
       service:
-        name: dnf-automatic.timer.service
+        name: dnf-automatic.timer
         enabled: yes
 
     - name: Applying automatic updates.
@@ -35,25 +35,25 @@
               regexp="^apply_updates = no"
               line="apply_updates = yes"
               state=present
-      notify: Restart dnf-automatic.timer.service
+      notify: Restart dnf-automatic.timer
 
     - name: Do nothing when laptop lid is closed
       lineinfile: dest=/etc/systemd/logind.conf
               regexp="^#HandleLidSwitch=suspend"
               line="HandleLidSwitch=ignore"
               state=present
-      notify: Restart systemd-logind.service
+      notify: Restart systemd-logind
 
     - name: Disallow password authentication
       lineinfile: dest=/etc/ssh/sshd_config
               regexp="^PasswordAuthentication"
               line="PasswordAuthentication no"
               state=present
-      notify: Restart ssh.service
+      notify: Restart sshd
 
     - name: Disallow root SSH access
       lineinfile: dest=/etc/ssh/sshd_config
               regexp="^PermitRootLogin"
               line="PermitRootLogin no"
               state=present
-      notify: Restart ssh.service
+      notify: Restart sshd
