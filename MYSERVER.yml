@@ -18,6 +18,23 @@
           - yum-utils
         state: latest
 
+    - name: Start service dnf-automatic.timer, if not started
+      service:
+          name: dnf-automatic.timer
+          state: started
+
+    - name: Enable service dnf-automatic.timer, and not touch the state
+      service:
+        name: dnf-automatic.timer
+        enabled: yes
+
+    - name: Applying automatic updates.
+      lineinfile: dest=/etc/dnf/automatic.conf
+              regexp="^apply_updates = no"
+              line="apply_updates = yes"
+              state=present
+      notify: Restart dnf-automatic.timer
+
     - name: Do nothing when laptop lid is closed
       lineinfile: dest=/etc/systemd/logind.conf
               regexp="^#HandleLidSwitch=suspend"
