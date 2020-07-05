@@ -18,6 +18,8 @@
           - yum-utils
           - python3
           - epel-release
+          - setroubleshoot
+          - autofs
         state: latest
 
     - name: Start service dnf-automatic.timer, if not started
