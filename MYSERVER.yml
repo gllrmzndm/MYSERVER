@@ -16,6 +16,8 @@
           - podman-docker
           - vim
           - yum-utils
+          - python3
+          - epel-release
         state: latest
 
     - name: Start service dnf-automatic.timer, if not started
