@@ -1,0 +1,19 @@
+---
+version: "2.1"
+services:
+  plex:
+    image: linuxserver/plex
+    container_name: plex
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - VERSION=docker
+      - UMASK_SET=022 #optional
+      - PLEX_CLAIM= #optional
+    ports:
+      - 32400:32400
+    volumes:
+      - /home/guillermo/plexmedia/library:/config
+      - /home/guillermo/plexmedia/tvseries:/tv
+      - /home/guillermo/plexmedia/movies:/movies
+    restart: unless-stopped
