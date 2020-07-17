@@ -1,3 +1,5 @@
+---
+
   - hosts: localhost
     become: yes
     tasks:
@@ -20,6 +22,7 @@
           - epel-release
           - setroubleshoot
           - autofs
+          - cronie
         state: latest
 
     - name: Start service dnf-automatic.timer, if not started
@@ -48,7 +51,7 @@
 
     - name: Disallow password authentication
       lineinfile: dest=/etc/ssh/sshd_config
-              regexp="^#PasswordAuthentication yes"
+              regexp="^PasswordAuthentication yes"
               line="PasswordAuthentication no"
               state=present
       notify: Restart sshd
