@@ -1,0 +1,53 @@
+# ansible-playbook -i ./hosts MYUBUNTUSERVER.yml -K
+
+---
+
+  - hosts: all
+    become: yes
+    tasks:
+
+    - name: Update and upgrade server
+      apt:
+        update_cache: yes
+        upgrade: yes
+
+    - name: Install packages
+      apt:
+        name:
+        - docker
+        - fail2ban
+        - ufw
+        - unattended-upgrades
+        - logwatch
+        - vim
+        - ansible
+
+        state: latest
+        cache_valid_time: 3600
+
+    - name: all incoming traffic is denied by default.
+      ufw: state=enabled policy=deny
+
+    - name: Do nothing when laptop lid is closed
+      lineinfile: dest=/etc/systemd/logind.conf
+              regexp="^#HandleLidSwitch=suspend"
+              line="HandleLidSwitch=ignore"
+              state=present
+      notify: Restart systemd-logind
+
+    - name: Allow ssh traffic
+      ufw: rule=allow port=22 proto=tcp
+
+    - name: Disallow password authentication
+      lineinfile: dest=/etc/ssh/sshd_config
+              regexp="^PasswordAuthentication"
+              line="PasswordAuthentication no"
+              state=present
+      notify: Restart ssh
+
+    - name: Disallow root SSH access
+      lineinfile: dest=/etc/ssh/sshd_config
+              regexp="^PermitRootLogin"
+              line="PermitRootLogin no"
+              state=present
+      notify: Restart ssh

@@ -1,3 +1,6 @@
+# ansible-playbook -i ./hosts MYSERVERCENTOS.yml -K
+
+
 ---
 
   - hosts: localhost
