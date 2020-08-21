@@ -1,4 +1,4 @@
-# ansible-playbook -i ./hosts MYUBUNTUSERVER.yml -K
+# ansible-playbook -i ./hosts MYSERVERUBUNTU.yml -K
 
 ---
 
