@@ -17,8 +17,6 @@
         name:
           - dnf-automatic
           - ansible
-          - podman
-          - podman-docker
           - vim
           - yum-utils
           - python3
