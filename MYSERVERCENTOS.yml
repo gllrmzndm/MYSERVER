@@ -1,15 +1,14 @@
 # ansible-playbook -i ./hosts MYSERVERCENTOS.yml -K
-
+# sudo ansible-playbook -i 192.168.178.1, MYSERVERCENTOS.yml -K -k
+# Get MY IP ADRESS!11!121121212131eurw	asfawsbfsxz hbjszjcvzxjhcvsZBHDCdsCvjkasdcvwz
 
 ---
-
-  - hosts: localhost
-    become: yes
-    tasks:
-
+- hosts: localhost
+  become: yes
+  tasks:
     - name: upgrade all packages
       yum:
-        name: '*'
+        name: "*"
         state: latest
 
     - name: Install packages
@@ -20,7 +19,6 @@
           - vim
           - yum-utils
           - python3
-          - epel-release
           - setroubleshoot
           - autofs
           - cronie
@@ -28,8 +26,8 @@
 
     - name: Start service dnf-automatic.timer, if not started
       service:
-          name: dnf-automatic.timer
-          state: started
+        name: dnf-automatic.timer
+        state: started
 
     - name: Enable service dnf-automatic.timer, and not touch the state
       service:
@@ -38,28 +36,29 @@
 
     - name: Applying automatic updates.
       lineinfile: dest=/etc/dnf/automatic.conf
-              regexp="^apply_updates = no"
-              line="apply_updates = yes"
-              state=present
+        regexp="^apply_updates = no"
+        line="apply_updates = yes"
+        state=present
       notify: Restart dnf-automatic.timer
 
     - name: Do nothing when laptop lid is closed
-      lineinfile: dest=/etc/systemd/logind.conf
-              regexp="^#HandleLidSwitch=suspend"
-              line="HandleLidSwitch=ignore"
-              state=present
-      notify: Restart systemd-logind
+    - lineinfile:
+        path: /etc/systemd/logind.conf
+        regexp: "^#HandleLidSwitch=suspend"
+        state: present
+        line: "HandleLidSwitch=ignore"
+        notify: Restart systemd-logind
 
     - name: Disallow password authentication
       lineinfile: dest=/etc/ssh/sshd_config
-              regexp="^PasswordAuthentication yes"
-              line="PasswordAuthentication no"
-              state=present
-      notify: Restart sshd
+        regexp="^PasswordAuthentication yes"
+        line="PasswordAuthentication no"
+        state=present
+      notify:
 
     - name: Disallow root SSH access
       lineinfile: dest=/etc/ssh/sshd_config
-              regexp="^#PermitRootLogin yes"
-              line="PermitRootLogin no"
-              state=present
+        regexp="^#PermitRootLogin yes"
+        line="PermitRootLogin no"
+        state=present
       notify: Restart sshd
